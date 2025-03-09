@@ -4,8 +4,8 @@ services:
   carlemany-backend:
     build:
       context: .
-      target: carlemany-backend-base
-    image: carlemany-backend-base
+      target: carlemany-backend-dev
+    image: carlemany-backend-dev
     volumes:
       - type: bind
         source: .
@@ -16,7 +16,7 @@ services:
       - carlemany-net
 
   black:
-    image: carlemany-backend-base:latest
+    image: carlemany-backend-dev:latest
     volumes:
       - type: bind
         source: ./

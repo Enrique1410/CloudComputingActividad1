@@ -1,2 +1,4 @@
 -r ./base.txt
 black==24.1.0
+ruff==0.1.14
+pytest==7.4.0

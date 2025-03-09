@@ -6,12 +6,14 @@ services:
       context: .
       target: carlemany-backend-dev
     image: carlemany-backend-dev
+    env_file:
+      - .env
     volumes:
       - type: bind
         source: .
         target: /carlemany-backend
     ports:
-      - "8000:80"
+      - "8080:80"  # Changed from 8000:80 to 8080:80
     networks:
       - carlemany-net
 
@@ -24,22 +26,36 @@ services:
         read_only: true
     entrypoint: sh -c "black --config .black --check --diff ."
 
-  test: &test
+  format:
     image: carlemany-backend-dev:latest
+    volumes:
+      - type: bind
+        source: ./
+        target: /carlemany-backend
+    entrypoint: sh -c "black --config .black . && ruff check --fix"
+
+  test:
+    image: carlemany-backend-test:latest
     env_file:
-     - .env
+      - .env
     volumes:
       - type: bind
         source: ./
         target: /carlemany-backend
     networks:
       - carlemany-net
-    entrypoint: pytest --maxfail=10
 
   test-cov:
-    <<: *test
+    image: carlemany-backend-test:latest
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: ./
+        target: /carlemany-backend
     entrypoint: pytest --maxfail=10 --cov --cov-report=term --cov-report=html --junitxml=tests/test-results/junit.xml
-
+    networks:
+      - carlemany-net
 
 networks:
   carlemany-net:
